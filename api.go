@@ -38,8 +38,11 @@ type API struct {
 // 60 requests per hour.		  1 minute
 // 300 per hour in Donation mode  5 s
 
-func NewAPI() *API {
-	api := &API{}
+func NewAPI(APIKey, SystemId string) *API {
+	api := &API{
+		APIKey:   APIKey,
+		SystemId: SystemId,
+	}
 	return api
 }
 
