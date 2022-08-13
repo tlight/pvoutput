@@ -12,20 +12,20 @@ import (
 type Frame struct {
 	Date string  `json:"d"`   // Output Date yyyymmdd 20060102
 	Time string  `json:"t"`   // Time hh:mm time 14:00 15:04
-	V1   int     `json:"v1"`  // Energy Generation  1 watt hours 10000
-	V2   int     `json:"v2"`  // Power Generation number watts 2000
-	V3   int     `json:"v3"`  // Energy Consumption  number watt hours 10000
-	V4   int     `json:"v4"`  // Power Consumption  watts 2000
+	V1   int64   `json:"v1"`  // Energy Generation  1 watt hours 10000
+	V2   int64   `json:"v2"`  // Power Generation number watts 2000
+	V3   int64   `json:"v3"`  // Energy Consumption  number watt hours 10000
+	V4   int64   `json:"v4"`  // Power Consumption  watts 2000
 	V5   float32 `json:"v5"`  // Temperature  // decimal celsius 23.4
 	V6   float32 `json:"v6"`  // Voltage decimal volts 239.2
-	C1   int     `json:"c1"`  // Cumulative Flag 1 or 0 number
-	N    int     `json:"n"`   // Net Flag 1 or 0
-	V7   int     `json:"v7"`  // user defined
-	V8   int     `json:"v8"`  // user defined
-	V9   int     `json:"v9"`  // user defined
-	V10  int     `json:"v10"` // user defined
-	V11  int     `json:"v11"` // user defined
-	V12  int     `json:"v12"` // user defined
+	C1   int64   `json:"c1"`  // Cumulative Flag 1 or 0 number
+	N    int64   `json:"n"`   // Net Flag 1 or 0
+	V7   int64   `json:"v7"`  // user defined
+	V8   int64   `json:"v8"`  // user defined
+	V9   int64   `json:"v9"`  // user defined
+	V10  int64   `json:"v10"` // user defined
+	V11  int64   `json:"v11"` // user defined
+	V12  int64   `json:"v12"` // user defined
 	M1   string  `json:"m1"`  // user defined
 }
 
@@ -34,7 +34,7 @@ type Frame struct {
 type API struct {
 	APIKey     string
 	SystemId   string
-	LastUpdate int
+	LastUpdate int64
 }
 
 func NewAPI(APIKey, SystemId string) *API {
@@ -65,6 +65,7 @@ func (api *API) AddStatus(frame *Frame) (string, error) {
 		"t":  {frame.Time},
 		"v2": {fmt.Sprintf("%d", frame.V2)},
 		"v4": {fmt.Sprintf("%d", frame.V4)},
+		"v6": {fmt.Sprintf("%d", frame.V6)},
 	}
 
 	req, err := http.NewRequest("POST", uri, strings.NewReader(form.Encode()))
@@ -76,6 +77,8 @@ func (api *API) AddStatus(frame *Frame) (string, error) {
 	req.Header.Add("X-Pvoutput-SystemId", api.SystemId)
 
 	resp, err := client.Do(req)
+	api.LastUpdate = time.Now().Unix()
+
 	if err != nil {
 		return "", err
 	}
