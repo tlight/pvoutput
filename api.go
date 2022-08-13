@@ -10,33 +10,32 @@ import (
 )
 
 type Frame struct {
-	d   string  // Output Date yyyymmdd 20060102
-	t   string  // Time hh:mm time 14:00 15:04
-	v1  int     // Energy Generation  1 watt hours 10000
-	v2  int     // Power Generation number watts 2000
-	v3  int     // Energy Consumption  number watt hours 10000
-	v4  int     // Power Consumption  watts 2000
-	v5  float32 // Temperature  // decimal celsius 23.4
-	v6  float32 // Voltage decimal volts 239.2
-	c1  int     // Cumulative Flag 1 or 0 number
-	n   int     // Net Flag 1 or 0
-	v7  int     // user defined
-	v8  int     // user defined
-	v9  int     // user defined
-	v10 int     // user defined
-	v11 int     // user defined
-	v12 int     // user defined
-	m1  string  // user defined
+	Date string  `json:"d"`   // Output Date yyyymmdd 20060102
+	Time string  `json:"t"`   // Time hh:mm time 14:00 15:04
+	V1   int     `json:"v1"`  // Energy Generation  1 watt hours 10000
+	V2   int     `json:"v2"`  // Power Generation number watts 2000
+	V3   int     `json:"v3"`  // Energy Consumption  number watt hours 10000
+	V4   int     `json:"v4"`  // Power Consumption  watts 2000
+	V5   float32 `json:"v5"`  // Temperature  // decimal celsius 23.4
+	V6   float32 `json:"v6"`  // Voltage decimal volts 239.2
+	C1   int     `json:"c1"`  // Cumulative Flag 1 or 0 number
+	N    int     `json:"n"`   // Net Flag 1 or 0
+	V7   int     `json:"v7"`  // user defined
+	V8   int     `json:"v8"`  // user defined
+	V9   int     `json:"v9"`  // user defined
+	V10  int     `json:"v10"` // user defined
+	V11  int     `json:"v11"` // user defined
+	V12  int     `json:"v12"` // user defined
+	M1   string  `json:"m1"`  // user defined
 }
 
+// 60 requests per hour.		  1 minute
+// 300 per hour in Donation mode  5 s
 type API struct {
 	APIKey     string
 	SystemId   string
 	LastUpdate int
 }
-
-// 60 requests per hour.		  1 minute
-// 300 per hour in Donation mode  5 s
 
 func NewAPI(APIKey, SystemId string) *API {
 	api := &API{
@@ -49,8 +48,8 @@ func NewAPI(APIKey, SystemId string) *API {
 func NewFrame() *Frame {
 	now := time.Now()
 	frame := &Frame{
-		d: now.Format("20060102"),
-		t: now.Format("15:04"),
+		Date: now.Format("20060102"),
+		Time: now.Format("15:04"),
 	}
 	return frame
 }
@@ -62,10 +61,10 @@ func (api *API) AddStatus(frame *Frame) (string, error) {
 		Timeout: time.Second * 10,
 	}
 	form := url.Values{
-		"d":  {frame.d},
-		"t":  {frame.t},
-		"v2": {fmt.Sprintf("%d", frame.v2)},
-		"v4": {fmt.Sprintf("%d", frame.v4)},
+		"d":  {frame.Date},
+		"t":  {frame.Time},
+		"v2": {fmt.Sprintf("%d", frame.V2)},
+		"v4": {fmt.Sprintf("%d", frame.V4)},
 	}
 
 	req, err := http.NewRequest("POST", uri, strings.NewReader(form.Encode()))
