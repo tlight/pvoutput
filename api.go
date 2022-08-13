@@ -65,7 +65,7 @@ func (api *API) AddStatus(frame *Frame) (string, error) {
 		"t":  {frame.Time},
 		"v2": {fmt.Sprintf("%d", frame.V2)},
 		"v4": {fmt.Sprintf("%d", frame.V4)},
-		"v6": {fmt.Sprintf("%d", frame.V6)},
+		"v6": {fmt.Sprintf("%f", frame.V6)},
 	}
 
 	req, err := http.NewRequest("POST", uri, strings.NewReader(form.Encode()))
