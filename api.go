@@ -32,9 +32,9 @@ type Frame struct {
 // 60 requests per hour.		  1 minute
 // 300 per hour in Donation mode  5 s
 type API struct {
-	APIKey     string
-	SystemId   string
-	LastUpdate int64
+	APIKey       string
+	SystemId     string
+	LastUpdateAt int64
 }
 
 func NewAPI(APIKey, SystemId string) *API {
@@ -77,7 +77,7 @@ func (api *API) AddStatus(frame *Frame) (string, error) {
 	req.Header.Add("X-Pvoutput-SystemId", api.SystemId)
 
 	resp, err := client.Do(req)
-	api.LastUpdate = time.Now().Unix()
+	api.LastUpdateAt = time.Now().Unix()
 
 	if err != nil {
 		return "", err
@@ -93,4 +93,8 @@ func (api *API) AddStatus(frame *Frame) (string, error) {
 	// read X-Rate-Limit-Remaining - remaining for hour
 	// X-Rate-Limit-Limit  total requests for hour
 	// X-Rate-Limit-Reset - unix time when reset
+}
+
+func (api *API) LastUpdatedAgo() int64 {
+	return time.Now().Unix() - api.LastUpdateAt
 }
